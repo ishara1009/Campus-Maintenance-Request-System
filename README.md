@@ -1,4 +1,4 @@
-# CampusCare — Campus Maintenance Request System
+# CampusCare - Campus Maintenance Request System
 
 A beginner-friendly full-stack portfolio project with a React 19/Vite frontend and a Java 17+/Spring Boot 4 backend. It supports secure student, staff, and administrator workflows, private image attachments, notifications, email verification, and password recovery.
 

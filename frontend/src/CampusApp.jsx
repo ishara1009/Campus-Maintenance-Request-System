@@ -4,6 +4,7 @@ import SignupPage from './pages/SignupPage'
 import SigninPage from './pages/SigninPage'
 import RoleDashboardPage from './pages/RoleDashboardPage'
 import AuthLinkPage from './pages/AuthLinkPage'
+import LandingPage from './pages/LandingPage'
 import './Campus.css'
 
 function ProtectedRoute({ children }) {
@@ -13,7 +14,7 @@ function ProtectedRoute({ children }) {
 export default function CampusApp() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={hasToken() ? '/dashboard' : '/signup'} replace />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/signin" element={<SigninPage />} />
       <Route path="/dashboard" element={<ProtectedRoute><RoleDashboardPage /></ProtectedRoute>} />
