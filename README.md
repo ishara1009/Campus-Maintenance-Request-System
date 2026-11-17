@@ -33,6 +33,13 @@ cd backend
 
 The first admin is created only when `ADMIN_EMAIL` does not already exist. Later startups never reset that password or promote an existing account. Remove `ADMIN_PASSWORD` from the environment after the first successful startup.
 
+Alternatively, create the first admin with the secure interactive helper (credentials are kept only in the process environment):
+
+```powershell
+cd backend
+.\create-admin.ps1
+```
+
 In another PowerShell window:
 
 ```powershell
