@@ -52,3 +52,51 @@
 @media(max-width:760px){.landing-nav{width:calc(100% - 32px);height:74px}.landing-nav-actions .nav-signin{display:none}.nav-cta{min-height:40px;padding:0 13px}.landing-hero{width:calc(100% - 20px);min-height:auto;padding:60px 22px 50px;border-radius:20px}.hero-copy h1{font-size:clamp(43px,13vw,62px);letter-spacing:-3px}.hero-copy>p{font-size:15px}.hero-actions{align-items:stretch;flex-direction:column}.hero-primary{justify-content:center}.hero-secondary{justify-content:center}.hero-trust{display:grid}.hero-product{min-height:350px;margin-top:20px}.preview-window{min-height:300px;grid-template-columns:44px 1fr}.preview-sidebar{padding:12px 8px}.preview-logo{width:28px;height:28px}.preview-sidebar i{width:18px;height:18px}.preview-main{padding:16px 12px}.preview-top strong{font-size:13px}.preview-stats{gap:5px;margin:14px 0}.preview-stats article{padding:9px}.preview-stats small{font-size:6px}.preview-stats b{font-size:14px}.preview-row{padding:9px}.floating-card{display:none}.landing-intro{width:calc(100% - 36px);padding:90px 0 55px;grid-template-columns:1fr;gap:28px}.section-lead{grid-column:auto}.landing-intro h2{font-size:39px}.journey-section{width:calc(100% - 20px);padding:34px 18px;margin-bottom:80px;border-radius:22px}.journey-rail{display:none}.journey-cards{grid-template-columns:1fr}.journey-cards article.featured{transform:none}.roles-section{padding:80px 24px}.roles-copy h2{font-size:42px}.role-stack{grid-template-columns:1fr}.landing-cta{width:calc(100% - 36px);margin:75px auto;padding:34px 24px;grid-template-columns:auto 1fr}.landing-cta>a{grid-column:1/-1;justify-content:center}.landing-cta h2{font-size:26px}.landing-footer{width:calc(100% - 36px);grid-template-columns:1fr auto}.landing-footer>p{grid-column:1/-1}.landing-footer>div{grid-column:1}.landing-footer>small{grid-column:2}.footer-logo{grid-column:1/-1}}
 @media(max-width:430px){.landing-logo strong{display:none}.preview-list-head button{display:none}.preview-stats article:first-child{display:none}.preview-stats{grid-template-columns:1fr 1fr}.preview-row em{display:none}.landing-cta{grid-template-columns:1fr}.cta-mark{display:none}}
 @media(prefers-reduced-motion:reduce){.hero-primary,.role-stack article{transition:none}}
+
+/* Landing presentation motion */
+@keyframes landingNavIn { from { opacity: 0; transform: translateY(-22px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes landingReveal { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes productReveal { from { opacity: 0; transform: translateX(38px) scale(.96); } to { opacity: 1; transform: translateX(0) scale(1); } }
+@keyframes cardFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes glowDrift { 0%, 100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(-18px,14px,0) scale(1.05); } }
+@keyframes sectionReveal { from { opacity: 0; transform: translateY(35px); } to { opacity: 1; transform: translateY(0); } }
+
+.landing-page { animation: pageFade .45s ease both; }
+.landing-nav { animation: landingNavIn .55s cubic-bezier(.22,.8,.25,1) both; }
+.landing-logo span { transition: transform .25s ease, background-color .25s ease; }
+.landing-logo:hover span { transform: rotate(-7deg) scale(1.06); background: var(--teal); }
+.landing-nav nav a { position: relative; }
+.landing-nav nav a::after { content:''; position:absolute; left:0; right:100%; bottom:-7px; height:2px; border-radius:2px; background:var(--teal); transition:right .22s ease; }
+.landing-nav nav a:hover::after { right:0; }
+.nav-cta, .hero-primary, .landing-cta>a { position: relative; overflow: hidden; transition: transform .22s ease, box-shadow .22s ease, background-color .22s ease; }
+.nav-cta:hover, .hero-primary:hover, .landing-cta>a:hover { transform: translateY(-2px); box-shadow:0 14px 30px rgba(4,41,43,.2); }
+.nav-cta svg, .hero-primary svg, .landing-cta>a svg, .role-stack a svg { transition: transform .22s ease; }
+.nav-cta:hover svg, .hero-primary:hover svg, .landing-cta>a:hover svg, .role-stack a:hover svg { transform: translateX(4px); }
+.landing-kicker { animation: landingReveal .5s .12s ease both; }
+.hero-copy h1 { animation: landingReveal .7s .2s cubic-bezier(.22,.8,.25,1) both; }
+.hero-copy>p { animation: landingReveal .6s .32s ease both; }
+.hero-actions { animation: landingReveal .55s .42s ease both; }
+.hero-trust { animation: landingReveal .5s .5s ease both; }
+.hero-product { animation: productReveal .8s .25s cubic-bezier(.22,.8,.25,1) both; }
+.assignment-card { animation: cardFloat 4.2s ease-in-out infinite; }
+.progress-card { animation: cardFloat 4.8s .8s ease-in-out infinite; }
+.hero-glow-one { animation: glowDrift 9s ease-in-out infinite; }.hero-glow-two { animation: glowDrift 11s 1s ease-in-out infinite reverse; }
+.preview-window { transition: transform .35s ease, box-shadow .35s ease; }
+.hero-product:hover .preview-window { transform: rotateY(-1deg) rotateX(0) translateY(-5px); box-shadow:0 52px 95px rgba(0,17,20,.46); }
+.journey-cards article, .role-stack article { transition: transform .25s ease, box-shadow .25s ease, background-color .25s ease; }
+.journey-cards article:hover { transform: translateY(-8px); box-shadow:0 26px 50px rgba(26,63,65,.14); }
+.journey-cards article.featured:hover { transform: translateY(-18px); }
+.journey-icon { transition: transform .28s ease; }.journey-cards article:hover .journey-icon { transform: rotate(-6deg) scale(1.08); }
+.landing-cta { transition: transform .25s ease, box-shadow .25s ease; }.landing-cta:hover { transform: translateY(-5px); box-shadow:0 30px 65px rgba(53,79,69,.16); }
+
+@supports (animation-timeline: view()) {
+  .landing-intro, .journey-cards article, .roles-copy, .role-stack article, .landing-cta {
+    animation: sectionReveal linear both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 28%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-page *, .landing-page *::before, .landing-page *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; animation-delay: 0ms !important; transition-duration: .01ms !important; }
+}

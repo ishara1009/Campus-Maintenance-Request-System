@@ -2,6 +2,28 @@
 
 A beginner-friendly full-stack portfolio project with a React 19/Vite frontend and a Java 17+/Spring Boot 4 backend. It supports secure student, staff, and administrator workflows, private image attachments, notifications, email verification, and password recovery.
 
+## Application preview
+
+### Landing page
+
+![CampusCare landing page](images/1.png)
+
+### Role-focused experience
+
+![CampusCare student, staff, and administrator role overview](images/2.png)
+
+### Secure sign in
+
+![CampusCare sign-in page](images/3.png)
+
+### Maintenance request form
+
+![CampusCare new maintenance request form](images/4.png)
+
+### Administrator dashboard
+
+![CampusCare administrator dashboard](images/5.png)
+
 ## Features
 
 - Students register, verify email, report issues with an optional JPEG/PNG, and track request history.
