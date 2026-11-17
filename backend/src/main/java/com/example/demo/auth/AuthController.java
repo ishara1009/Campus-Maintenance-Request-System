@@ -29,13 +29,15 @@ public class AuthController {
     private final AuthTokenRepository tokenRepository;
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthActionService actions;
 
     public AuthController(UserRepository userRepository, AuthTokenRepository tokenRepository,
-                          TokenService tokenService, PasswordEncoder passwordEncoder) {
+                          TokenService tokenService, PasswordEncoder passwordEncoder, AuthActionService actions) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
+        this.actions = actions;
     }
 
     @PostMapping("/signup")
@@ -45,18 +47,20 @@ public class AuthController {
         if (userRepository.existsByEmailIgnoreCase(email)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "An account already exists for this email.");
         }
-        userRepository.save(new User(request.fullName().trim(), email,
-                passwordEncoder.encode(request.password())));
-        return Map.of("message", "Account created successfully. Please sign in.");
+        User user = userRepository.save(new User(request.fullName().trim(), email,
+                passwordEncoder.encode(request.password()), User.Role.STUDENT, false));
+        actions.sendVerification(user);
+        return Map.of("message", "Account created. Check your email to verify it before signing in.");
     }
 
     @PostMapping("/signin")
     public SigninResponse signin(@Valid @RequestBody SigninRequest request) {
         User user = userRepository.findByEmailIgnoreCase(request.email().trim())
                 .orElseThrow(() -> invalidCredentials());
-        if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+        if (!user.isActive() || !passwordEncoder.matches(request.password(), user.getPasswordHash())) {
             throw invalidCredentials();
         }
+        if (!user.isEmailVerified()) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Verify your email before signing in.");
         return new SigninResponse(tokenService.createToken(user), UserResponse.from(user));
     }
 
@@ -87,9 +91,9 @@ public class AuthController {
 
     public record SigninResponse(String token, UserResponse user) {}
 
-    public record UserResponse(Long id, String fullName, String email, String role) {
+    public record UserResponse(Long id, String fullName, String email, User.Role role, boolean mustChangePassword) {
         static UserResponse from(User user) {
-            return new UserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getRole());
+            return new UserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getRole(), user.isMustChangePassword());
         }
     }
 }

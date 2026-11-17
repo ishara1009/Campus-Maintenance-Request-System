@@ -35,9 +35,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             tokenRepository.findByTokenHashAndExpiresAtAfter(tokenService.hash(rawToken), Instant.now())
                     .ifPresent(authToken -> {
                         var user = authToken.getUser();
-                        var authentication = new UsernamePasswordAuthenticationToken(
-                                user, null, List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        if (user.isActive()) {
+                            var authentication = new UsernamePasswordAuthenticationToken(
+                                    user, null, List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                        }
                     });
         }
         filterChain.doFilter(request, response);

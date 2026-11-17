@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface AuthTokenRepository extends JpaRepository<AuthToken, Long> {
     Optional<AuthToken> findByTokenHashAndExpiresAtAfter(String tokenHash, Instant now);
     void deleteByTokenHash(String tokenHash);
+    void deleteByUserId(Long userId);
 }

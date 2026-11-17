@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/requests")
@@ -28,12 +29,14 @@ public class MaintenanceRequestController {
 
     @GetMapping
     public List<RequestResponse> list(@AuthenticationPrincipal User user) {
+        if (user.getRole() != User.Role.STUDENT) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         return requestRepository.findByUserIdOrderByCreatedAtDesc(user.getId())
                 .stream().map(RequestResponse::from).toList();
     }
 
     @GetMapping("/summary")
     public SummaryResponse summary(@AuthenticationPrincipal User user) {
+        if (user.getRole() != User.Role.STUDENT) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         long total = requestRepository.countByUserId(user.getId());
         long pending = requestRepository.countByUserIdAndStatus(user.getId(), MaintenanceRequest.Status.PENDING);
         long inProgress = requestRepository.countByUserIdAndStatus(user.getId(), MaintenanceRequest.Status.IN_PROGRESS);
@@ -45,6 +48,7 @@ public class MaintenanceRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public RequestResponse create(@AuthenticationPrincipal User user,
                                   @Valid @RequestBody CreateRequest request) {
+        if (user.getRole() != User.Role.STUDENT) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         var saved = requestRepository.save(new MaintenanceRequest(user, request.title().trim(),
                 request.category().trim(), request.location().trim(), request.description().trim(),
                 request.priority()));

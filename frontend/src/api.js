@@ -7,10 +7,11 @@ export const clearToken = () => localStorage.removeItem(TOKEN_KEY)
 
 export async function api(path, options = {}) {
   const token = localStorage.getItem(TOKEN_KEY)
+  const isForm = options.body instanceof FormData
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      ...(isForm ? {} : { 'Content-Type': 'application/json' }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
@@ -30,4 +31,11 @@ export async function api(path, options = {}) {
   }
 
   return response.status === 204 ? null : response.json()
+}
+
+export async function apiBlob(path) {
+  const token = localStorage.getItem(TOKEN_KEY)
+  const response = await fetch(`${API_URL}${path}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+  if (!response.ok) { const error = new Error('Unable to load image.'); error.status = response.status; throw error }
+  return response.blob()
 }

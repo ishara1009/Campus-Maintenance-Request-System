@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.auth.TokenAuthenticationFilter;
+import com.example.demo.auth.AuthRateLimitFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,13 +21,14 @@ import java.util.List;
 public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                            TokenAuthenticationFilter tokenFilter) throws Exception {
+                                            TokenAuthenticationFilter tokenFilter, AuthRateLimitFilter rateLimitFilter) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/signup", "/api/auth/signin", "/error").permitAll()
+                        .requestMatchers("/api/auth/signup", "/api/auth/signin", "/api/auth/verify-email",
+                                "/api/auth/forgot-password", "/api/auth/reset-password", "/error").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(errors -> errors.authenticationEntryPoint((request, response, exception) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -34,6 +36,7 @@ public class SecurityConfig {
                     response.getWriter().write("{\"message\":\"Please sign in to continue.\"}");
                 }))
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(rateLimitFilter, TokenAuthenticationFilter.class)
                 .build();
     }
 
@@ -45,7 +48,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("http://localhost:*", "http://127.0.0.1:*"));
+        config.setAllowedOriginPatterns(List.of(System.getenv().getOrDefault("FRONTEND_ORIGIN", "http://localhost:*"), "http://127.0.0.1:*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

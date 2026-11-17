@@ -7,6 +7,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.json.JsonMapper;
+import com.example.demo.user.UserRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -22,6 +23,9 @@ class AuthFlowIntegrationTests {
     @Autowired
     private JsonMapper jsonMapper;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
     void signupSigninAndDashboardFlowWorks() throws Exception {
         String email = "flow-test-" + System.nanoTime() + "@campus.edu";
@@ -32,6 +36,10 @@ class AuthFlowIntegrationTests {
                                 {"fullName":"Flow Test User","email":"%s","password":"SecurePass123"}
                                 """.formatted(email)))
                 .andExpect(status().isCreated());
+
+        var createdUser = userRepository.findByEmailIgnoreCase(email).orElseThrow();
+        createdUser.setEmailVerified(true);
+        userRepository.save(createdUser);
 
         String signinBody = mockMvc.perform(post("/api/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)

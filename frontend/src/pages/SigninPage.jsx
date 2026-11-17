@@ -44,6 +44,7 @@ export default function SigninPage() {
             <label>Password<span className="password-field"><input name="password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Enter your password" autoComplete="current-password" required /><button type="button" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'}</button></span></label>
             <button className="primary-button" disabled={loading}>{loading ? 'Signing in…' : 'Sign in'} <span>→</span></button>
           </form>
+          <p className="auth-switch"><Link to="/forgot-password">Forgot your password?</Link></p>
           <p className="auth-switch">New to CampusCare? <Link to="/signup">Create an account</Link></p>
         </div>
       </section>
