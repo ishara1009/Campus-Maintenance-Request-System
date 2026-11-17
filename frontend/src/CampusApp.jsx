@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { hasToken } from './api'
 import SignupPage from './pages/SignupPage'
 import SigninPage from './pages/SigninPage'
@@ -11,17 +12,30 @@ function ProtectedRoute({ children }) {
   return hasToken() ? children : <Navigate to="/signin" replace />
 }
 
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
+}
+
 export default function CampusApp() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/signup" element={<SignupPage />} />
-      <Route path="/signin" element={<SigninPage />} />
-      <Route path="/dashboard" element={<ProtectedRoute><RoleDashboardPage /></ProtectedRoute>} />
-      <Route path="/verify-email" element={<AuthLinkPage mode="verify" />} />
-      <Route path="/forgot-password" element={<AuthLinkPage mode="forgot" />} />
-      <Route path="/reset-password" element={<AuthLinkPage mode="reset" />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/signin" element={<SigninPage />} />
+        <Route path="/dashboard" element={<ProtectedRoute><RoleDashboardPage /></ProtectedRoute>} />
+        <Route path="/verify-email" element={<AuthLinkPage mode="verify" />} />
+        <Route path="/forgot-password" element={<AuthLinkPage mode="forgot" />} />
+        <Route path="/reset-password" element={<AuthLinkPage mode="reset" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   )
 }
